@@ -2,12 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="50dp">
+    android:layout_height="50dp">
     <TextView
         android:id="@+id/main_textview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingLeft="10dp"
         android:gravity="center_vertical"
         android:text="test"/>
 
