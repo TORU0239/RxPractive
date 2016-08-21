@@ -10,6 +10,7 @@ import io.toru.rxpractive.R;
 /**
  * Created by toru on 2016. 8. 18..
  */
+
 public class MainViewAdapter extends RecyclerView.Adapter<MainViewHolder> {
 
     @Override
