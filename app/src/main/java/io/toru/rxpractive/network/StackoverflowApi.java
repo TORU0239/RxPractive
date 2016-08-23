@@ -1,7 +1,6 @@
 package io.toru.rxpractive.network;
 
 import io.toru.rxpractive.pattern.model.StackOverFlowQuestion;
-import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -11,6 +10,5 @@ import rx.Observable;
  */
 public interface StackOverflowApi {
     @GET("/2.2/questions?order=desc&sort=creation&site=stackoverflow")
-//    Call<StackOverFlowQuestion> loadQuestions(@Query("tagged") String tags);
     Observable<StackOverFlowQuestion> loadQuestions(@Query("tagged") String tags);
 }

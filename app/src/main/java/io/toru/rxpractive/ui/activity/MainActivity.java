@@ -11,11 +11,16 @@ import java.io.IOException;
 import butterknife.BindView;
 import io.toru.rxpractive.R;
 import io.toru.rxpractive.base.activity.BaseActivity;
+import io.toru.rxpractive.network.NetworkOperator;
 import io.toru.rxpractive.network.StackOverflowApi;
+import io.toru.rxpractive.network.WeatherForecastApi;
 import io.toru.rxpractive.pattern.model.StackOverFlowQuestion;
+import io.toru.rxpractive.pattern.model.WeatherForecast;
+import io.toru.rxpractive.pattern.model.WeatherForecastItemList;
 import io.toru.rxpractive.ui.adapter.MainViewAdapter;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,32 +55,39 @@ public class MainActivity extends BaseActivity {
         mainRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mainRecyclerView.setAdapter(new MainViewAdapter());
 
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        // set your desired log level
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
         OkHttpClient okClient = new OkHttpClient.Builder()
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public okhttp3.Response intercept(Interceptor.Chain chain) throws IOException {
-                        okhttp3.Response response = chain.proceed(chain.request());
-                        return response;
-                    }
-                })
+//                .addInterceptor(new Interceptor() {
+//                    @Override
+//                    public okhttp3.Response intercept(Interceptor.Chain chain) throws IOException {
+//                        okhttp3.Response response = chain.proceed(chain.request());
+//                        return response;
+//                    }
+//                })
+                .addInterceptor(logging)
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.stackexchange.com/")
+//                .baseUrl("https://api.stackexchange.com/")
+                .baseUrl(NetworkOperator.BASE_URL)
                 .client(okClient)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        // prepare call in Retrofit 2.0
-        final StackOverflowApi stackOverflowAPI = retrofit.create(StackOverflowApi.class);
-        Observable<StackOverFlowQuestion> observable = stackOverflowAPI.loadQuestions("Android");
-        observable.subscribeOn(Schedulers.io())
+
+        // weather api
+        final WeatherForecastApi forecastApi = retrofit.create(WeatherForecastApi.class);
+        Observable<WeatherForecastItemList> forecastObservable = forecastApi.getWeatherForecastResultList("Seoul", NetworkOperator.APIKEY);
+        forecastObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<StackOverFlowQuestion>() {
+                .subscribe(new Subscriber<WeatherForecastItemList>() {
                     @Override
                     public void onCompleted() {
-                        Log.w(TAG, "onCompleted:");
+                        Log.w(TAG, "onCompleted");
                     }
 
                     @Override
@@ -84,9 +96,42 @@ public class MainActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onNext(StackOverFlowQuestion stackOverFlowQuestion) {
-                        Log.w(TAG, "onNext: size :: " + stackOverFlowQuestion.items.size());
+                    public void onNext(WeatherForecastItemList weatherForecastItemList) {
+                        Log.w(TAG, "onNext: weather forecast size :: " + weatherForecastItemList.list.size());
+                        Log.w(TAG, "onNext: " + weatherForecastItemList.list.get(1).dt);
+                        Log.w(TAG, "onNext: " + weatherForecastItemList.list.get(1).dt_txt);
+                        Log.w(TAG, "onNext: " + weatherForecastItemList.list.get(1).main);
+
+                        Log.w(TAG, "onNext: temp :: " + weatherForecastItemList.list.get(0).main.temp);
+                        Log.w(TAG, "onNext: temp max :: " + weatherForecastItemList.list.get(0).main.temp_max);
+                        Log.w(TAG, "onNext: temp min :: " + weatherForecastItemList.list.get(0).main.temp_min);
                     }
                 });
+
+
+
+        // prepare call in Retrofit 2.0
+
+//        final StackOverflowApi stackOverflowAPI = retrofit.create(StackOverflowApi.class);
+//        Observable<StackOverFlowQuestion> observable = stackOverflowAPI.loadQuestions("Android");
+//        observable.subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<StackOverFlowQuestion>() {
+//                    @Override
+//                    public void onCompleted() {
+//                        Log.w(TAG, "onCompleted:");
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    @Override
+//                    public void onNext(StackOverFlowQuestion stackOverFlowQuestion) {
+//                        Log.w(TAG, "onNext: size :: " + stackOverFlowQuestion.items.size());
+//                    }
+//                });
+
     }
 }
