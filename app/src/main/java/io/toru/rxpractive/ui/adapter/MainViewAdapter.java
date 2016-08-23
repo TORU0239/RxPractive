@@ -5,13 +5,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import io.toru.rxpractive.R;
+import io.toru.rxpractive.pattern.model.WeatherForecast;
 
 /**
  * Created by toru on 2016. 8. 18..
  */
 
 public class MainViewAdapter extends RecyclerView.Adapter<MainViewHolder> {
+
+    private List<WeatherForecast> itemList;
+
+    public MainViewAdapter(List<WeatherForecast> itemList) {
+        this.itemList = itemList;
+    }
 
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -21,11 +30,11 @@ public class MainViewAdapter extends RecyclerView.Adapter<MainViewHolder> {
 
     @Override
     public void onBindViewHolder(MainViewHolder holder, int position) {
-        holder.update(position);
+        holder.update(itemList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return 20;
+        return itemList.size();
     }
 }

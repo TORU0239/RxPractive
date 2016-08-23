@@ -7,6 +7,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.toru.rxpractive.R;
 import io.toru.rxpractive.base.adapter.BaseViewHolder;
+import io.toru.rxpractive.pattern.model.WeatherForecast;
 
 /**
  * Created by toru on 2016. 8. 18..
@@ -23,6 +24,7 @@ public class MainViewHolder extends BaseViewHolder {
 
     @Override
     public void update(Object model) {
-        textView.setText("shit!!");
+        WeatherForecast forecast = (WeatherForecast)model;
+        textView.setText(forecast.dt_txt);
     }
 }
