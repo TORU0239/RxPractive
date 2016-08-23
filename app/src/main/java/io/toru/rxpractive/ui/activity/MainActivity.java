@@ -4,35 +4,22 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.Toast;
-
-import java.io.IOException;
 
 import butterknife.BindView;
 import io.toru.rxpractive.R;
 import io.toru.rxpractive.base.activity.BaseActivity;
 import io.toru.rxpractive.network.NetworkOperator;
-import io.toru.rxpractive.network.StackOverflowApi;
 import io.toru.rxpractive.network.WeatherForecastApi;
-import io.toru.rxpractive.pattern.model.StackOverFlowQuestion;
-import io.toru.rxpractive.pattern.model.WeatherForecast;
 import io.toru.rxpractive.pattern.model.WeatherForecastItemList;
 import io.toru.rxpractive.ui.adapter.MainViewAdapter;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
-import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
@@ -107,31 +94,5 @@ public class MainActivity extends BaseActivity {
                         Log.w(TAG, "onNext: temp min :: " + weatherForecastItemList.list.get(0).main.temp_min);
                     }
                 });
-
-
-
-        // prepare call in Retrofit 2.0
-
-//        final StackOverflowApi stackOverflowAPI = retrofit.create(StackOverflowApi.class);
-//        Observable<StackOverFlowQuestion> observable = stackOverflowAPI.loadQuestions("Android");
-//        observable.subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber<StackOverFlowQuestion>() {
-//                    @Override
-//                    public void onCompleted() {
-//                        Log.w(TAG, "onCompleted:");
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    @Override
-//                    public void onNext(StackOverFlowQuestion stackOverFlowQuestion) {
-//                        Log.w(TAG, "onNext: size :: " + stackOverFlowQuestion.items.size());
-//                    }
-//                });
-
     }
 }
