@@ -30,30 +30,8 @@ public class MainPresenterImp implements MainPresenter{
 
     @Override
     public void onGetWeatherItem() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        // set your desired log level
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        OkHttpClient okClient = new OkHttpClient.Builder()
-//                .addInterceptor(new Interceptor() {
-//                    @Override
-//                    public okhttp3.Response intercept(Interceptor.Chain chain) throws IOException {
-//                        okhttp3.Response response = chain.proceed(chain.request());
-//                        return response;
-//                    }
-//                })
-                .addInterceptor(logging)
-                .build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(NetworkOperator.BASE_URL)
-                .client(okClient)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
         // weather api
-        final WeatherForecastApi forecastApi = retrofit.create(WeatherForecastApi.class);
+        final WeatherForecastApi forecastApi = NetworkOperator.getRetrofit().create(WeatherForecastApi.class);
         Observable<WeatherForecastItemList> forecastObservable = forecastApi.getWeatherForecastResultList("Seoul", NetworkOperator.APIKEY);
         forecastObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
