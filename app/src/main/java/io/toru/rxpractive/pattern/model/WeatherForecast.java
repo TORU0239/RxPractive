@@ -8,11 +8,5 @@ public class WeatherForecast {
     public String dt_txt;
 
     public WeatherInfo main;
+    public WeatherIconInfo[] weather;
 }
-
-//class Weather{
-//    public String id;
-//    public String main;
-//    public String description;
-//    public String icon;
-//}

@@ -10,8 +10,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by toru on 2016. 8. 21..
  */
 public class NetworkOperator {
-    private static final String APIKEY = "cf6c3f7a16e52bae0bef4c58901dec73";
-    private static final String BASE_URL = "http://api.openweathermap.org/data/2.5/";
+    public static final String APIKEY = "cf6c3f7a16e52bae0bef4c58901dec73";
+    public static final String BASE_URL = "http://api.openweathermap.org/data/2.5/";
+    public static final String IMAGE_URL = "http://openweathermap.org/img/w/";
 
     public static Retrofit getRetrofit(){
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();

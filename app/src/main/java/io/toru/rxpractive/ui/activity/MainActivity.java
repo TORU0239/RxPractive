@@ -8,9 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -20,6 +23,11 @@ import io.toru.rxpractive.pattern.model.WeatherForecast;
 import io.toru.rxpractive.pattern.presenter.MainPresenterImp;
 import io.toru.rxpractive.pattern.view.MainView;
 import io.toru.rxpractive.ui.adapter.MainViewAdapter;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class MainActivity extends BaseActivity implements MainView {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -38,7 +46,6 @@ public class MainActivity extends BaseActivity implements MainView {
     private ProgressDialog progressBar;
 
     private MainViewAdapter adapter;
-
     private List<WeatherForecast> weatherList;
 
     @Override
@@ -58,6 +65,7 @@ public class MainActivity extends BaseActivity implements MainView {
         progressBar.setIndeterminate(true);
         progressBar.setTitle("Notice");
         progressBar.setMessage("Now Loading...");
+        progressBar.setCancelable(false);
 
         presenter = new MainPresenterImp(this);
     }
@@ -65,9 +73,11 @@ public class MainActivity extends BaseActivity implements MainView {
     @Override
     public void onList(List<WeatherForecast> weatherResult) {
         if(weatherResult != null && weatherResult.size() > 0){
-            weatherList.clear();
-            weatherList.addAll(weatherResult);
-            adapter.notifyDataSetChanged();
+            if(weatherList != null){
+                weatherList.clear();
+                weatherList.addAll(weatherResult);
+                adapter.notifyDataSetChanged();
+            }
         }
         else{
             Log.w(TAG, "onList: data null or size 0");
