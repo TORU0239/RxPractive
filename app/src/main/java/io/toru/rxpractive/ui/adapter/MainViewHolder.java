@@ -25,6 +25,6 @@ public class MainViewHolder extends BaseViewHolder {
     @Override
     public void update(Object model) {
         WeatherForecast forecast = (WeatherForecast)model;
-        textView.setText(forecast.dt_txt);
+        textView.setText(new StringBuilder(forecast.dt_txt).append(" , ").append(forecast.main.temp_max).append(" / ").append(forecast.main.temp_min).toString());
     }
 }

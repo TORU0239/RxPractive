@@ -27,4 +27,12 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/actionbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:layout_margin="15dp"
+        app:fabSize="normal"/>
+
 </android.support.design.widget.CoordinatorLayout>

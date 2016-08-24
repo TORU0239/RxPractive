@@ -6,11 +6,6 @@ import io.toru.rxpractive.network.NetworkOperator;
 import io.toru.rxpractive.network.WeatherForecastApi;
 import io.toru.rxpractive.pattern.model.WeatherForecastItemList;
 import io.toru.rxpractive.pattern.view.MainView;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -30,6 +25,7 @@ public class MainPresenterImp implements MainPresenter{
 
     @Override
     public void onGetWeatherItem() {
+        mainView.onLoadingStart();
         // weather api
         final WeatherForecastApi forecastApi = NetworkOperator.getRetrofit().create(WeatherForecastApi.class);
         Observable<WeatherForecastItemList> forecastObservable = forecastApi.getWeatherForecastResultList("Seoul", NetworkOperator.APIKEY);
@@ -39,6 +35,7 @@ public class MainPresenterImp implements MainPresenter{
                     @Override
                     public void onCompleted() {
                         Log.w(TAG, "onCompleted");
+                        mainView.onLoadingFinish();
                     }
 
                     @Override
@@ -60,5 +57,39 @@ public class MainPresenterImp implements MainPresenter{
                         mainView.onList(weatherForecastItemList.list);
                     }
                 });
+
+        /*
+        // for test
+        Observable<WeatherForecastItemList> forecastObservable2 = forecastApi.getWeatherForecastResultList("Seoul", NetworkOperator.APIKEY);
+
+        Observable.interval(5, TimeUnit.SECONDS)
+                .take(3)
+                .flatMap(new Func1<Long, Observable<WeatherForecastItemList>>() {
+                    @Override
+                    public Observable<WeatherForecastItemList> call(Long aLong) {
+                        Log.w(TAG, "call: long:; " + aLong);
+                        return forecastApi.getWeatherForecastResultList("Seoul", NetworkOperator.APIKEY);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<WeatherForecastItemList>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.w(TAG, "onCompleted");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(WeatherForecastItemList weatherForecastItemList){
+                        Log.w(TAG, "call: " + weatherForecastItemList.list.size());
+                        mainView.onList(weatherForecastItemList.list);
+                    }
+                });
+                */
     }
 }

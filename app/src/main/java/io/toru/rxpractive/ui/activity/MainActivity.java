@@ -1,33 +1,25 @@
 package io.toru.rxpractive.ui.activity;
 
+import android.app.ProgressDialog;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import io.toru.rxpractive.R;
 import io.toru.rxpractive.base.activity.BaseActivity;
-import io.toru.rxpractive.network.NetworkOperator;
-import io.toru.rxpractive.network.WeatherForecastApi;
 import io.toru.rxpractive.pattern.model.WeatherForecast;
-import io.toru.rxpractive.pattern.model.WeatherForecastItemList;
 import io.toru.rxpractive.pattern.presenter.MainPresenterImp;
 import io.toru.rxpractive.pattern.view.MainView;
 import io.toru.rxpractive.ui.adapter.MainViewAdapter;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity implements MainView {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -39,6 +31,11 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @BindView(R.id.main_recyclerView)
     public RecyclerView mainRecyclerView;
+
+    @BindView(R.id.actionbtn)
+    public FloatingActionButton actionButton;
+
+    private ProgressDialog progressBar;
 
     private MainViewAdapter adapter;
 
@@ -57,8 +54,12 @@ public class MainActivity extends BaseActivity implements MainView {
         adapter = new MainViewAdapter(weatherList);
         mainRecyclerView.setAdapter(adapter);
 
+        progressBar = new ProgressDialog(this);
+        progressBar.setIndeterminate(true);
+        progressBar.setTitle("Notice");
+        progressBar.setMessage("Now Loading...");
+
         presenter = new MainPresenterImp(this);
-        presenter.onGetWeatherItem();
     }
 
     @Override
@@ -71,5 +72,20 @@ public class MainActivity extends BaseActivity implements MainView {
         else{
             Log.w(TAG, "onList: data null or size 0");
         }
+    }
+
+    @OnClick(R.id.actionbtn)
+    public void goActionButton(View view){
+        presenter.onGetWeatherItem();
+    }
+
+    @Override
+    public void onLoadingStart() {
+        progressBar.show();
+    }
+
+    @Override
+    public void onLoadingFinish() {
+        progressBar.dismiss();
     }
 }
