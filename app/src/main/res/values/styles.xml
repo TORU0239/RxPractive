@@ -10,4 +10,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- toolbar theme -->
+
+    <style name="MyToolBarTheme" parent="ThemeOverlay.AppCompat">
+        <item name="android:colorBackground">#ffffffff</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>>
+
 </resources>
