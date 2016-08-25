@@ -8,8 +8,10 @@ import io.toru.rxpractive.pattern.model.WeatherForecastItemList;
 import io.toru.rxpractive.pattern.view.MainView;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by toru on 2016. 8. 23..
@@ -17,10 +19,12 @@ import rx.schedulers.Schedulers;
 public class MainPresenterImp implements MainPresenter{
     private static final String TAG = MainPresenterImp.class.getSimpleName();
 
+    private CompositeSubscription compositeSubscription;
     private MainView mainView;
 
     public MainPresenterImp(MainView mainView) {
         this.mainView = mainView;
+        compositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -29,7 +33,7 @@ public class MainPresenterImp implements MainPresenter{
         // weather api
         final WeatherForecastApi forecastApi = NetworkOperator.getRetrofit().create(WeatherForecastApi.class);
         Observable<WeatherForecastItemList> forecastObservable = forecastApi.getWeatherForecastResultList("Seoul", NetworkOperator.APIKEY);
-        forecastObservable.subscribeOn(Schedulers.io()) // observable 에 subscribe가 이루어지는 thread 지정
+        Subscription weatherSubscription = forecastObservable.subscribeOn(Schedulers.io()) // observable 에 subscribe가 이루어지는 thread 지정
                 .observeOn(AndroidSchedulers.mainThread()) // event가 전달될 때 사용되는 thread 지정함
                 .subscribe(new Subscriber<WeatherForecastItemList>() {
                     @Override
@@ -57,5 +61,11 @@ public class MainPresenterImp implements MainPresenter{
                         mainView.onList(weatherForecastItemList.list);
                     }
                 });
+        compositeSubscription.add(weatherSubscription);
+    }
+
+    @Override
+    public void onUnsubscribe() {
+        compositeSubscription.unsubscribe();
     }
 }
