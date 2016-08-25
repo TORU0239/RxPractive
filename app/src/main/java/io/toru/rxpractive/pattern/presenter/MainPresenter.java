@@ -6,4 +6,5 @@ package io.toru.rxpractive.pattern.presenter;
 public interface MainPresenter {
     // view logic handling
     void onGetWeatherItem();
+    void onUnsubscribe();
 }
