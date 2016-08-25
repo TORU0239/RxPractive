@@ -29,8 +29,8 @@ public class MainPresenterImp implements MainPresenter{
         // weather api
         final WeatherForecastApi forecastApi = NetworkOperator.getRetrofit().create(WeatherForecastApi.class);
         Observable<WeatherForecastItemList> forecastObservable = forecastApi.getWeatherForecastResultList("Seoul", NetworkOperator.APIKEY);
-        forecastObservable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        forecastObservable.subscribeOn(Schedulers.io()) // observable 에 subscribe가 이루어지는 thread 지정
+                .observeOn(AndroidSchedulers.mainThread()) // event가 전달될 때 사용되는 thread 지정함
                 .subscribe(new Subscriber<WeatherForecastItemList>() {
                     @Override
                     public void onCompleted() {
@@ -57,39 +57,5 @@ public class MainPresenterImp implements MainPresenter{
                         mainView.onList(weatherForecastItemList.list);
                     }
                 });
-
-        /*
-        // for test
-        Observable<WeatherForecastItemList> forecastObservable2 = forecastApi.getWeatherForecastResultList("Seoul", NetworkOperator.APIKEY);
-
-        Observable.interval(5, TimeUnit.SECONDS)
-                .take(3)
-                .flatMap(new Func1<Long, Observable<WeatherForecastItemList>>() {
-                    @Override
-                    public Observable<WeatherForecastItemList> call(Long aLong) {
-                        Log.w(TAG, "call: long:; " + aLong);
-                        return forecastApi.getWeatherForecastResultList("Seoul", NetworkOperator.APIKEY);
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<WeatherForecastItemList>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.w(TAG, "onCompleted");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(WeatherForecastItemList weatherForecastItemList){
-                        Log.w(TAG, "call: " + weatherForecastItemList.list.size());
-                        mainView.onList(weatherForecastItemList.list);
-                    }
-                });
-                */
     }
 }

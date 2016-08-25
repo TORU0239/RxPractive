@@ -23,6 +23,11 @@ import io.toru.rxpractive.pattern.model.WeatherForecast;
 import io.toru.rxpractive.pattern.presenter.MainPresenterImp;
 import io.toru.rxpractive.pattern.view.MainView;
 import io.toru.rxpractive.ui.adapter.MainViewAdapter;
+import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.functions.Func2;
 
 public class MainActivity extends BaseActivity implements MainView {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -63,7 +68,70 @@ public class MainActivity extends BaseActivity implements MainView {
         progressBar.setCancelable(false);
 
         presenter = new MainPresenterImp(this);
-        presenter.onGetWeatherItem();
+//        presenter.onGetWeatherItem();
+
+        // test code, observable 의 merge
+        Observable<Integer> observable1 = Observable.just(1);
+        Observable<String> obs1 = observable1.map(new Func1<Integer, String>() {
+            @Override
+            public String call(Integer integer) {
+                return "Left";
+            }
+        });
+
+        Observable<Integer> observable2 = Observable.just(2);
+        Observable<String> obs2 = observable2.map(new Func1<Integer, String>() {
+            @Override
+            public String call(Integer integer) {
+                return "Right";
+            }
+        });
+
+        Observable<String> merged = Observable.merge(obs1, obs2);
+        merged.map(new Func1<String, String>() {
+            @Override
+            public String call(String s) {
+                Log.w(TAG, "call: s:" + s);
+                return s.toUpperCase();
+            }
+        })
+        .subscribe(new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+                Log.w(TAG, "onCompleted: merged");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(String s) {
+                Log.w(TAG, "onNext: merged String :: " + s);
+            }
+        });
+
+
+        Observable<Integer> minuses = Observable.just(-2);
+        Observable<Integer> pluses  = Observable.just(1);
+
+        Observable<Integer> together = Observable.merge(minuses, pluses);
+        together.scan(-3, new Func2<Integer, Integer, Integer>() {
+            @Override
+            // 처음 값은 누적된 값이며 두 번째 값은 이번에 받은 값이다 이 코드에서는 이번에 받은 값을 쓰지 않기 때문에 아무것도 불리는 게 없다
+            public Integer call(Integer integer, Integer integer2) {
+                Log.w(TAG, "call: integer :: " + integer);
+                Log.w(TAG, "call: integer2 :: " + integer2);
+                return integer + 1;
+            }
+        })
+        .subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                Log.w(TAG, "subscribe call integer :: " + integer);
+            }
+        });
     }
 
     @Override
