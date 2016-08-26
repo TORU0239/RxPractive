@@ -1,5 +1,6 @@
 package io.toru.rxpractive.ui.adapter;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import java.util.List;
 
 import io.toru.rxpractive.R;
 import io.toru.rxpractive.pattern.model.WeatherForecast;
+import io.toru.rxpractive.ui.activity.DetailActivity;
 
 /**
  * Created by toru on 2016. 8. 18..

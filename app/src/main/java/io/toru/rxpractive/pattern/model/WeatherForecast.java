@@ -7,6 +7,7 @@ public class WeatherForecast {
     public String dt;
     public String dt_txt;
 
+    public WeatherCityInfo city;
     public WeatherInfo main;
     public WeatherIconInfo[] weather;
 }
